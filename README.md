@@ -1,0 +1,1 @@
+# automatization_lnma_rct
