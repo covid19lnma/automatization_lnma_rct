@@ -1,0 +1,17 @@
+services:
+    robotsearch:
+        image: jadm333/robotsearch
+        restart: on-failure
+        environment:
+            - LANG=C.UTF-8
+        ports:
+            - 127.0.0.1:5050:5000
+        volumes:
+            - ../robotsearch/robotsearch/data:/var/lib/deploy/robotsearch/data
+    job:
+        image: jadm333/automatization_lnma_rct
+        environment:
+            - SENDER_ADDRESS=${SENDER_ADDRESS}
+            - RECEIVER_ADDRESS=${RECEIVER_ADDRESS}
+        volumes:
+            - ./token.json:/root/app/token.json
