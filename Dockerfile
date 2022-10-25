@@ -13,6 +13,8 @@ RUN mkdir -p /root/app
 WORKDIR /root/app
 COPY . /root/app
 RUN pip3 install -r requirements.txt
+
+RUN mkdir -p /tmp/ris
 # JOB
 CMD [ "python3", "./Email_Ris_File/main.py"]
 # docker build -t jadm333/automatization_lnma_rct .

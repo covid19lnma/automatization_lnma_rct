@@ -13,5 +13,8 @@ services:
         environment:
             - SENDER_ADDRESS=${SENDER_ADDRESS}
             - RECEIVER_ADDRESS=${RECEIVER_ADDRESS}
+            - START_DATE=${START_DATE}
+            - END_DATE=${END_DATE}
         volumes:
             - ./token.json:/root/app/token.json
+            - ./download_data:/tmp/ris

@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from pathlib import Path
 from send_email import send_mail
+import pytz
 
 from selenium.webdriver.firefox.service import Service
 import os
@@ -27,37 +28,41 @@ GOOGLE_ACCOUNTS_BASE_URL = 'https://accounts.google.com'
 REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'
 
 
-def get_search_date_range(forgot = False):
-    import pytz
-    TZ = pytz.timezone('America/Toronto')
-
-    weekday = datetime.now(TZ).strftime('%A')
-    today = datetime.now(TZ).strftime("%Y%m%d")
-        
-    if weekday == "Monday":
-        
-        last_friday = datetime.now(TZ) - timedelta(days=3)
-        last_friday = last_friday.strftime('%Y%m%d')
-        
-        search_dat = "Entry_date:([" + last_friday + " TO " + today + "])"
-    else:
-        
-        search_dat = "Entry_date:(" + today +")"
-
-    if forgot:
-        yesterday = (datetime.now() - timedelta(1)).strftime("%Y%m%d")
-        today = yesterday
-
-        if weekday == "Tuesday":
-        
-            last_friday = datetime.today() - timedelta(days=4)
+def get_search_date_range(start_date=None, end_date=None,forgot = False):
+    
+    if start_date == None or end_date == None:
+        start = datetime.strptime(start_date, "%Y%m%d")
+        end = datetime.strptime(end_date, "%Y%m%d")
+        search_dat = "Entry_date:([" + start + " TO " + end + "])"
+    else: 
+        TZ = pytz.timezone('America/Toronto')
+        weekday = datetime.now(TZ).strftime('%A')
+        today = datetime.now(TZ).strftime("%Y%m%d")
+            
+        if weekday == "Monday":
+            
+            last_friday = datetime.now(TZ) - timedelta(days=3)
             last_friday = last_friday.strftime('%Y%m%d')
-        
+            
             search_dat = "Entry_date:([" + last_friday + " TO " + today + "])"
         else:
-        
+            
             search_dat = "Entry_date:(" + today +")"
-        
+
+        if forgot:
+            yesterday = (datetime.now() - timedelta(1)).strftime("%Y%m%d")
+            today = yesterday
+
+            if weekday == "Tuesday":
+            
+                last_friday = datetime.today() - timedelta(days=4)
+                last_friday = last_friday.strftime('%Y%m%d')
+            
+                search_dat = "Entry_date:([" + last_friday + " TO " + today + "])"
+            else:
+            
+                search_dat = "Entry_date:(" + today +")"
+            
     return search_dat
 
 def wait_for_download_and_get_file_name(folder, timedel):
@@ -150,9 +155,9 @@ def get_filtered_ris_file(folder, file_name):
     return ris_file
 
 
-def do_the_whole_shabang(path, sender, receiver,forgot = False):
+def do_the_whole_shabang(path, sender, receiver,start_date,end_date,forgot = False):
     
-    search_dat = get_search_date_range(forgot=forgot)
+    search_dat = get_search_date_range(start_date,end_date,forgot=forgot)
 
     file_name = look_up_ris_file(search_dat, path)
     
@@ -161,29 +166,29 @@ def do_the_whole_shabang(path, sender, receiver,forgot = False):
     
         final_file_name = get_filtered_ris_file(path, file_name)
         # final_file_name = get_filtered_ris_file_local(path, file_name)
-        print(f"sending email from:{sender} to:{receiver}")
+        # print(f"sending email from:{sender} to:{receiver}")
         
-        try:
-            send_mail(sender, receiver,
-                  '.ris files for the ' + search_dat + " date range",
-                  'The .ris file, processed and all' +
-                  'See you space cowboy...',
-                  filepath=final_file_name)
-            print("email sent")
-        except Exception as e:
-            print(e)
-            print("renew access token")
-    else:
+    #     try:
+    #         send_mail(sender, receiver,
+    #               '.ris files for the ' + search_dat + " date range",
+    #               'The .ris file, processed and all' +
+    #               'See you space cowboy...',
+    #               filepath=final_file_name)
+    #         print("email sent")
+    #     except Exception as e:
+    #         print(e)
+    #         print("renew access token")
+    # else:
         
-        print("The .ris file is empty, ending run without doing anything else")
+    #     print("The .ris file is empty, ending run without doing anything else")
         
-        try:
-            send_mail(sender, receiver,
-              'No .ris files for the ' + search_dat + " date range",
-              '<b>No .ris file processsed, the date range returned empty list</b><br><br>' +
-              'Better luck next time')
-        except:
-            print("renew access token")
+    #     try:
+    #         send_mail(sender, receiver,
+    #           'No .ris files for the ' + search_dat + " date range",
+    #           '<b>No .ris file processsed, the date range returned empty list</b><br><br>' +
+    #           'Better luck next time')
+    #     except:
+    #         print("renew access token")
     
 
     

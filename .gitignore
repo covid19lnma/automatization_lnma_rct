@@ -131,3 +131,5 @@ dmypy.json
 #Sensitive info
 *.json
 .env
+
+download_data/*
