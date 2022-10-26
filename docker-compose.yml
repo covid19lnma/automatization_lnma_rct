@@ -9,7 +9,8 @@ services:
         volumes:
             - ../robotsearch/robotsearch/data:/var/lib/deploy/robotsearch/data
     job:
-        image: jadm333/automatization_lnma_rct
+        build:
+            context: .
         environment:
             - SENDER_ADDRESS=${SENDER_ADDRESS}
             - RECEIVER_ADDRESS=${RECEIVER_ADDRESS}
