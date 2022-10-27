@@ -31,11 +31,11 @@ Opt. Step for Windows system:
 1. Empty if necessary and create `download_data` folder inside `automatization_lnma_rct`
 2. Run on terminal inside `automatization_lnma_rct` folder:
 ```sh
-docker-compose up -d
+docker compose up -d
 # Wait to finish
 docker wait automatization_lnma_rct-job-1
 # Wait to finish
-docker-compose down
+docker compose down
 ```
 
 4. Finally the download and process files will be inside `download_data`
