@@ -15,9 +15,6 @@ Steps to run:
 
 Env file example:
 ```env
-SENDER_ADDRESS=<>
-RECEIVER_ADDRESS=<>
-GH_TOKEN=<>
 START_DATE=20221014
 END_DATE=20221021
 ```
@@ -31,7 +28,7 @@ Opt. Step for Windows system:
 1. Empty if necessary and create `download_data` folder inside `automatization_lnma_rct`
 2. Run on terminal inside `automatization_lnma_rct` folder:
 ```sh
-docker compose up -d
+docker compose up -d --build job
 # Wait to finish
 docker wait automatization_lnma_rct-job-1
 # Wait to finish
@@ -39,3 +36,26 @@ docker compose down
 ```
 
 4. Finally the download and process files will be inside `download_data`
+
+### Debugging
+
+```
+docker network create jpNet
+
+docker run -d \
+	-p 127.0.0.1:5050:5000 \
+	-n robotsearch \
+	--network jpNet \
+	-v "$(pwd)/robotsearch/data":"/var/lib/deploy/robotsearch/data" \
+	jadm333/robotsearch
+
+docker build -t jadm333/automatization_lnma_rct .
+
+docker run --rm -it \
+	--env-file ./.env \
+	-v "$(pwd)/token.json:/root/app/token.json" \
+	-v "$(pwd)/download_data:/tmp/ris" \
+	--network=jpNet \
+	--entrypoint bash \
+	jadm333/automatization_lnma_rct
+```

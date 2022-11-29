@@ -28,40 +28,9 @@ GOOGLE_ACCOUNTS_BASE_URL = 'https://accounts.google.com'
 REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'
 
 
-def get_search_date_range(start_date=None, end_date=None,forgot = False):
+def get_search_date_range(start_date=None, end_date=None):
     
-    if start_date == None or end_date == None:
-        start = datetime.strptime(start_date, "%Y%m%d")
-        end = datetime.strptime(end_date, "%Y%m%d")
-        search_dat = "Entry_date:([" + start + " TO " + end + "])"
-    else: 
-        TZ = pytz.timezone('America/Toronto')
-        weekday = datetime.now(TZ).strftime('%A')
-        today = datetime.now(TZ).strftime("%Y%m%d")
-            
-        if weekday == "Monday":
-            
-            last_friday = datetime.now(TZ) - timedelta(days=3)
-            last_friday = last_friday.strftime('%Y%m%d')
-            
-            search_dat = "Entry_date:([" + last_friday + " TO " + today + "])"
-        else:
-            
-            search_dat = "Entry_date:(" + today +")"
-
-        if forgot:
-            yesterday = (datetime.now() - timedelta(1)).strftime("%Y%m%d")
-            today = yesterday
-
-            if weekday == "Tuesday":
-            
-                last_friday = datetime.today() - timedelta(days=4)
-                last_friday = last_friday.strftime('%Y%m%d')
-            
-                search_dat = "Entry_date:([" + last_friday + " TO " + today + "])"
-            else:
-            
-                search_dat = "Entry_date:(" + today +")"
+    search_dat = "Entry_date:([" + start_date + " TO " + end_date + "])"
             
     return search_dat
 
@@ -155,9 +124,9 @@ def get_filtered_ris_file(folder, file_name):
     return ris_file
 
 
-def do_the_whole_shabang(path, sender, receiver,start_date,end_date,forgot = False):
+def do_the_whole_shabang(path, start_date,end_date):
     
-    search_dat = get_search_date_range(start_date,end_date,forgot=forgot)
+    search_dat = get_search_date_range(start_date,end_date)
 
     file_name = look_up_ris_file(search_dat, path)
     
