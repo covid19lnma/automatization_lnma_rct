@@ -14,7 +14,7 @@ def particion(filepath,n,directorio): # Se le pasa la direccion del archivo ("fi
         output=[brincos[i:i + n_citas_c_archivo] for i in range(0,len(brincos),n_citas_c_archivo)] #divide en una lista de listas
         #Creamos una lista que guarde cada 1 de las listas pero en formato de strings
         strings = []
-        nombres = ["archivo1.ris","archivo2.ris","archivo3.ris","archivo4.ris","archivo5.ris"]
+        nombres = ["file1.ris","file2.ris","file3.ris","file4.ris","file5.ris"]
         for i in range(0,len(output)):
             strings.append("".join(output[i]))
             file = open(str(directorio) + "/" + nombres[i],"w", encoding = "utf-8")
@@ -26,11 +26,11 @@ def particion(filepath,n,directorio): # Se le pasa la direccion del archivo ("fi
         output[4] = sorted(output[4] + output[5])
         #Creamos una lista que guarde cada 1 de las listas pero en formato de strings
         strings = []
-        nombres = ["archivo1.ris","archivo2.ris","archivo3.ris","archivo4.ris","archivo5.ris", "archivos6.ris"]
+        nombres = ["file1.ris","file2.ris","file3.ris","file4.ris","file5.ris","file6.ris"]
         for i in range(0,len(output)):
             strings.append("".join(output[i]))
             file = open(str(directorio) + "/" + nombres[i],"w", encoding = "utf-8")
             file.write(strings[i] + os.linesep)
             file.close()
+        os.remove('{directorio}/file6.ris'.format(directorio = str(directorio)))    
         print(" Tamaño archivo grande: %i \n No. citas por achivo: %i \n No. citas ultimo archivo: %i" %(len(brincos),n_citas_c_archivo , len(output[4])))
-
